@@ -62,7 +62,7 @@ function handleInput(e) {
         value = e.key;
     }
 
-    const isNumber = /\d/;
+    const isNumber = /^\d/;
     const isOperator = /^[+\-\*/]/;
     const isEqual = /^=|Enter/;
     const isClear = /^c/;
@@ -71,7 +71,7 @@ function handleInput(e) {
 
     switch (true) {
         case isNumber.test(value):
-            numbers.length <= 12 && handleNumber(value);
+            ((numbers.length < 12 && !numbers.includes('.'))||(numbers.length < 13 && numbers.includes('.'))) && handleNumber(value);
             break;
         case isOperator.test(value):
             handleOperator(value);
@@ -156,7 +156,7 @@ function handleClear() {
 }
 
 function handleDecimal() {
-    if (!numbers.includes('.')) {
+    if (!numbers.includes('.') && numbers.length<12) {
         numbers.push('.');
         displayBtmScreen(numbers.join(''));
     }
