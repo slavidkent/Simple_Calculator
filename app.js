@@ -86,10 +86,9 @@ function handleNumber(num) {
 function handleOperator(ope) {
     console.log(numX);
     if (operator === undefined) {
-        // input is empty
+        // input is not empty or number array is not empty
         if (numbers.length !== 0) {
             numX = parseFloat(numbers.join(''));
-            clearArray(numbers);
         }
     }
     //no number is initialize and input is not empty
@@ -97,23 +96,30 @@ function handleOperator(ope) {
         numY = parseFloat(numbers.join(''));
         numX = operate(operator, numX, numY);
         console.log(numX);
-        clearArray(numbers);
         numY = undefined;
     }
+    clearArray(numbers);
     operator = ope;
     displayTopScreen(numX, ope, numY);
     displayBtmScreen();
 }
 
 function handleEqual() {
-    if (numX !== undefined && numX !== 'ERROR' && numbers.length !== 0 && operator!==undefined) {
-        const numYTemp = parseInt(numbers.join(''));
-        const numXTemp = numX;
-        const operatorTemp = operator;
-        numX = operate(operator, numX, numYTemp);
+    if (
+        numX !== undefined &&
+        numX !== 'ERROR' &&
+        numbers.length !== 0 &&
+        operator !== undefined
+    ) {
+        numY = parseFloat(numbers.join(''));
+        displayTopScreen(numX, operator, numY, '=');
+        numX = operate(operator, numX, numY);
+        displayBtmScreen(numX);
         numY = undefined;
         operator = undefined;
-        displayTopScreen(numXTemp, operatorTemp, numYTemp, '=');
+    } else if (numX === 'ERROR') {
+        operator = undefined;
+        displayTopScreen();
         displayBtmScreen(numX);
     }
     clearArray(numbers);
