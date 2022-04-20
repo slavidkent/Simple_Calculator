@@ -59,6 +59,7 @@ function handleInput(e) {
     const isOperator = /[+\-\*/]/;
     const isEqual = /=/;
     const isClear = /c/;
+    const isDecimalPoint = /./;
 
     switch (true) {
         case isNumber.test(value):
@@ -72,6 +73,9 @@ function handleInput(e) {
             break;
         case isClear.test(value):
             handleClear();
+            break;
+        case isDecimalPoint.test(value):
+            handleDecimal();
             break;
         default:
             break;
@@ -132,4 +136,11 @@ function handleClear() {
     operator = undefined;
     displayBtmScreen();
     displayTopScreen();
+}
+
+function handleDecimal() {
+    if (!numbers.includes('.')) {
+        numbers.push('.');
+        displayBtmScreen(numbers.join(''));
+    }
 }
