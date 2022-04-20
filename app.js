@@ -1,9 +1,3 @@
-// console.log debug function
-const test = (e) => {
-    console.log(`content :${e.target.textContent}`);
-    console.log(`value   :${e.target.value}`);
-};
-
 // variable
 let numbers = [];
 let numX; /* accumulator/firstNumber/total of last operation */
@@ -11,7 +5,8 @@ let numY;
 let operator;
 
 const buttons = document.querySelectorAll('.calc-button');
-const display = document.querySelector('.screen');
+const displayTop = document.querySelector('.top-screen');
+const displayBtm = document.querySelector('.btm-screen');
 buttons.forEach((button) => button.addEventListener('click', handleInput));
 
 // function expression
@@ -31,21 +26,30 @@ const operate = (operator, x, y) => {
             return divide(x, y);
     }
 };
-const clearNumbersArray = (arr) => {
+const clearArray = (arr) => {
     arr.splice(0, arr.length);
 };
 const lengthControl = (number) => {
     let integerNumberStringLength = String(Math.floor(number)).length;
     let floatNumberStringLength = String(number).length;
-    //display max length of 12 digit and round to min 11
-    if (floatNumberStringLength > 12 && integerNumberStringLength <= 11) {
-        return number.toFixed(12 - integerNumberStringLength);
+    //display max length of 12 digit and round to min 11 integer
+    if (
+        floatNumberStringLength > 12 &&
+        integerNumberStringLength <= 11 &&
+        parseInt(number) !== NaN
+    ) {
+        return parseFloat(number).toFixed(12 - integerNumberStringLength);
     }
     return number;
 };
-const displayValue = (value) => {
+const displayBtmScreen = (value = '') => {
     value = lengthControl(value);
-    display.textContent = value;
+    displayBtm.textContent = value;
+};
+const displayTopScreen = (num1 = '', ope = '', num2 = '', equ = '') => {
+    num1 = lengthControl(num1);
+    num2 = lengthControl(num2);
+    displayTop.textContent = `${num1} ${ope} ${num2} ${equ}`;
 };
 
 // functions to handle input =======================================
@@ -75,38 +79,51 @@ function handleInput(e) {
 }
 
 function handleNumber(num) {
-    console.log(num)
-        numbers.push(num);
-        displayValue(numbers.join(''));
+    numbers.push(num);
+    displayBtmScreen(numbers.join(''));
 }
 
 function handleOperator(ope) {
-    if (numX === undefined && operator === undefined) {
-        numX = parseFloat(numbers.join(''));
-        clearNumbersArray(numbers);
-    } else if (numX !== undefined && numbers.length !== 0) {
+    console.log(numX);
+    if (operator === undefined) {
+        // input is empty
+        if (numbers.length !== 0) {
+            numX = parseFloat(numbers.join(''));
+            clearArray(numbers);
+        }
+    }
+    //no number is initialize and input is not empty
+    else if (numX !== undefined && numX !== 'ERROR' && numbers.length !== 0) {
         numY = parseFloat(numbers.join(''));
-        clearNumbersArray(numbers);
         numX = operate(operator, numX, numY);
-        displayValue(numX);
+        console.log(numX);
+        clearArray(numbers);
         numY = undefined;
     }
     operator = ope;
+    displayTopScreen(numX, ope, numY);
+    displayBtmScreen();
 }
 
 function handleEqual() {
-    if (numX !== undefined && numbers.length !== 0) {
-        numY = parseInt(numbers.join(''));
-        clearNumbersArray(numbers);
-        numX = operate(operator, numX, numY);
-        displayValue(numX);
+    if (numX !== undefined && numX !== 'ERROR' && numbers.length !== 0 && operator!==undefined) {
+        const numYTemp = parseInt(numbers.join(''));
+        const numXTemp = numX;
+        const operatorTemp = operator;
+        numX = operate(operator, numX, numYTemp);
+        numY = undefined;
+        operator = undefined;
+        displayTopScreen(numXTemp, operatorTemp, numYTemp, '=');
+        displayBtmScreen(numX);
     }
+    clearArray(numbers);
 }
 
 function handleClear() {
-    clearNumbersArray(numbers);
+    clearArray(numbers);
     numX = undefined;
     numY = undefined;
     operator = undefined;
-    displayValue('');
+    displayBtmScreen();
+    displayTopScreen();
 }
