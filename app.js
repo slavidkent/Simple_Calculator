@@ -4,13 +4,11 @@ const test = (e) => {
     console.log(`value   :${e.target.value}`);
 };
 
-
 // variable
 let numbers = [];
 let numX; /* accumulator/firstNumber/total of last operation */
 let numY;
 let operator;
-
 
 const buttons = document.querySelectorAll('.calc-button');
 const display = document.querySelector('.screen');
@@ -20,7 +18,7 @@ buttons.forEach((button) => button.addEventListener('click', handleInput));
 const add = (x, y) => x + y;
 const subtract = (x, y) => x - y;
 const multiply = (x, y) => x * y;
-const divide = (x, y) => x / y;
+const divide = (x, y) => (y !== 0 ? x / y : 'ERROR');
 const operate = (operator, x, y) => {
     switch (operator) {
         case '+':
@@ -36,7 +34,17 @@ const operate = (operator, x, y) => {
 const clearNumbersArray = (arr) => {
     arr.splice(0, arr.length);
 };
+const lengthControl = (number) => {
+    let integerNumberStringLength = String(Math.floor(number)).length;
+    let floatNumberStringLength = String(number).length;
+    //display max length of 12 digit and round to min 11
+    if (floatNumberStringLength > 12 && integerNumberStringLength <= 11) {
+        return number.toFixed(12 - integerNumberStringLength);
+    }
+    return number;
+};
 const displayValue = (value) => {
+    value = lengthControl(value);
     display.textContent = value;
 };
 
@@ -48,20 +56,28 @@ function handleInput(e) {
     const isEqual = /=/;
     const isClear = /c/;
 
-    if (isNumber.test(value)) {
-        handleNumber(value);
-    } else if (isOperator.test(value)) {
-        handleOperator(value);
-    } else if (isEqual.test(value)) {
-        handleEqual();
-    } else if (isClear.test(value)) {
-        handleClear();
+    switch (true) {
+        case isNumber.test(value):
+            numbers.length <= 12 && handleNumber(value);
+            break;
+        case isOperator.test(value):
+            handleOperator(value);
+            break;
+        case isEqual.test(value):
+            handleEqual();
+            break;
+        case isClear.test(value):
+            handleClear();
+            break;
+        default:
+            break;
     }
 }
 
 function handleNumber(num) {
-    numbers.push(num);
-    displayValue(numbers.join(''));
+    console.log(num)
+        numbers.push(num);
+        displayValue(numbers.join(''));
 }
 
 function handleOperator(ope) {
