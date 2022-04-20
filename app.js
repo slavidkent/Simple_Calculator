@@ -59,7 +59,8 @@ function handleInput(e) {
     const isOperator = /[+\-\*/]/;
     const isEqual = /=/;
     const isClear = /c/;
-    const isDecimalPoint = /./;
+    const isDecimalPoint = /\./;
+    const isDelete = /del/;
 
     switch (true) {
         case isNumber.test(value):
@@ -77,6 +78,9 @@ function handleInput(e) {
         case isDecimalPoint.test(value):
             handleDecimal();
             break;
+        case isDelete.test(value):
+            handleDelete();
+            break;
         default:
             break;
     }
@@ -88,7 +92,6 @@ function handleNumber(num) {
 }
 
 function handleOperator(ope) {
-    console.log(numX);
     if (operator === undefined) {
         // input is not empty or number array is not empty
         if (numbers.length !== 0) {
@@ -99,12 +102,13 @@ function handleOperator(ope) {
     else if (numX !== undefined && numX !== 'ERROR' && numbers.length !== 0) {
         numY = parseFloat(numbers.join(''));
         numX = operate(operator, numX, numY);
-        console.log(numX);
         numY = undefined;
     }
     clearArray(numbers);
     operator = ope;
-    displayTopScreen(numX, ope, numY);
+    if (numX !== undefined) {
+        displayTopScreen(numX, ope, numY);
+    }
     displayBtmScreen();
 }
 
@@ -115,18 +119,26 @@ function handleEqual() {
         numbers.length !== 0 &&
         operator !== undefined
     ) {
+        console.log(numX);
         numY = parseFloat(numbers.join(''));
         displayTopScreen(numX, operator, numY, '=');
         numX = operate(operator, numX, numY);
         displayBtmScreen(numX);
         numY = undefined;
         operator = undefined;
+        clearArray(numbers);
     } else if (numX === 'ERROR') {
         operator = undefined;
         displayTopScreen();
         displayBtmScreen(numX);
+        clearArray(numbers);
+    } else if (numbers.length !== 0) {
+        operator = undefined;
+        numX = parseFloat(numbers.join(''));
+        clearArray(numbers);
+        displayTopScreen(numX, '', numY, '=');
     }
-    clearArray(numbers);
+    console.log('click');
 }
 
 function handleClear() {
@@ -141,6 +153,13 @@ function handleClear() {
 function handleDecimal() {
     if (!numbers.includes('.')) {
         numbers.push('.');
+        displayBtmScreen(numbers.join(''));
+    }
+}
+
+function handleDelete() {
+    if (numbers.length !== 0) {
+        numbers.pop();
         displayBtmScreen(numbers.join(''));
     }
 }
