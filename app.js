@@ -8,6 +8,7 @@ const buttons = document.querySelectorAll('.calc-button');
 const displayTop = document.querySelector('.top-screen');
 const displayBtm = document.querySelector('.btm-screen');
 buttons.forEach((button) => button.addEventListener('click', handleInput));
+window.addEventListener('keydown', handleKeyboard);
 
 // function expression
 const add = (x, y) => x + y;
@@ -54,13 +55,19 @@ const displayTopScreen = (num1 = '', ope = '', num2 = '', equ = '') => {
 
 // functions to handle input =======================================
 function handleInput(e) {
-    const value = e.target.value;
+    let value;
+    if (e.type === 'click') {
+        value = e.target.value;
+    } else if (e.type === 'keydown') {
+        value = e.key;
+    }
+
     const isNumber = /\d/;
-    const isOperator = /[+\-\*/]/;
-    const isEqual = /=/;
-    const isClear = /c/;
-    const isDecimalPoint = /\./;
-    const isDelete = /del/;
+    const isOperator = /^[+\-\*/]/;
+    const isEqual = /^=|Enter/;
+    const isClear = /^c/;
+    const isDecimalPoint = /^\./;
+    const isDelete = /del|Delete|Backspace/;
 
     switch (true) {
         case isNumber.test(value):
@@ -119,7 +126,6 @@ function handleEqual() {
         numbers.length !== 0 &&
         operator !== undefined
     ) {
-        console.log(numX);
         numY = parseFloat(numbers.join(''));
         displayTopScreen(numX, operator, numY, '=');
         numX = operate(operator, numX, numY);
@@ -138,7 +144,6 @@ function handleEqual() {
         clearArray(numbers);
         displayTopScreen(numX, '', numY, '=');
     }
-    console.log('click');
 }
 
 function handleClear() {
@@ -162,4 +167,7 @@ function handleDelete() {
         numbers.pop();
         displayBtmScreen(numbers.join(''));
     }
+}
+function handleKeyboard(e) {
+    handleInput(e);
 }
