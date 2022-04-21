@@ -44,6 +44,8 @@ const lengthControl = (number) => {
     //display max length of 12 digit and round to min 11 integer
     if (floatNumberStringLength > 12 && integerNumberStringLength <= 11 && parseInt(number) !== NaN) {
         return parseFloat(number).toFixed(12 - integerNumberStringLength);
+    } else if (integerNumberStringLength>12){
+        return number.toPrecision(8)
     }
     return number;
 };
