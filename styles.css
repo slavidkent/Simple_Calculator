@@ -1,8 +1,20 @@
 :root {
-    --button-equal: rgb(242, 251, 255);
-    --button-remove: rgb(255, 240, 240);
+    /* button color */
+    --button-equal: rgb(244, 250, 255);
+    --button-remove: rgb(255, 245, 245);
     --button-number: white;
-    --button-operator: rgb(255, 253, 239);
+    --button-operator: rgb(255, 255, 245);
+    --button-special: rgb(245, 255, 245);
+
+    /* button color hover */
+    --button-equal-hover: rgb(220, 245, 255);
+    --button-remove-hover: rgb(255, 226, 226);
+    --button-number-hover: rgb(241, 241, 241);
+    --button-operator-hover: rgb(255, 255, 211);
+    --button-special-hover: rgb(231, 255, 231);
+    /* border color */
+    --border-color: rgb(199, 199, 199);
+    --background-color-primary: rgb(243, 241, 241);
 }
 * {
     margin: 0;
@@ -13,14 +25,14 @@
 body {
     height: 100vh;
     width: 100vw;
-    background-color: rgb(243, 241, 241);
+    background-color: var(--background-color-primary);
     display: flex;
     justify-content: center;
     align-items: center;
 }
 .calc-container {
-    width: 500px;
-    padding: 30px;
+    width: 470px;
+    padding: 1.5rem;
     border: 0px;
     border-radius: 30px;
     box-shadow: 3px 3px 5px 2px rgba(0, 0, 0, 0.2);
@@ -28,20 +40,20 @@ body {
 }
 .screen {
     text-align: right;
-    background-color: rgb(248, 248, 248);
-    margin-bottom: 30px;
-    height: 10rem;
+    background-color: var(--background-color-primary);
+    margin-bottom: 1rem;
+    height: 8rem;
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
-    border: 1px solid rgb(199, 199, 199);
-    border-radius: 10px;
+    justify-content: center;
+    border: 1px solid var(--border-color);
+    border-radius: 1rem 1rem 0 0;
     color: rgb(78, 78, 78);
     padding: 10px;
 }
 .top-screen {
     height: 2.5rem;
-    font-size: 2rem;
+    font-size: 1.5rem;
 }
 .btm-screen {
     height: 3.5rem;
@@ -59,18 +71,43 @@ body {
     font-size: 1.2rem;
     font-weight: lighter;
     color: rgb(122, 122, 122);
-    border: 1px solid rgb(199, 199, 199);
+    border: 1px solid var(--border-color);
     border-radius: 0;
 }
-.number{
+
+.calc-button:nth-child(17) {
+    border-bottom-left-radius: 1rem;
+}
+.calc-button:nth-child(20) {
+    border-bottom-right-radius: 1rem;
+}
+.number {
     background-color: var(--button-number);
+}
+.number:hover {
+    background-color: var(--button-number-hover);
 }
 .equal {
     background-color: var(--button-equal);
 }
+.equal:hover {
+    background-color: var(--button-equal-hover);
+}
 .operator {
     background-color: var(--button-operator);
 }
+.operator:hover {
+    background-color: var(--button-operator-hover);
+}
 .remove {
-    background-color: var(--button-remove) ;
+    background-color: var(--button-remove);
+}
+.remove:hover {
+    background-color: var(--button-remove-hover);
+}
+.positive-negative {
+    background-color: var(--button-special);
+}
+.positive-negative:hover {
+    background-color: var(--button-special-hover);
 }
