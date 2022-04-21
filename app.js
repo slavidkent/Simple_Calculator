@@ -20,6 +20,7 @@ const add = (x, y) => x + y;
 const subtract = (x, y) => x - y;
 const multiply = (x, y) => x * y;
 const divide = (x, y) => (y !== 0 ? x / y : 'ERROR');
+const power = (x, y) => (x < 0 && y < 1 && y > -1 ? 'ERROR' : x ** y);
 const operate = (operator, x, y) => {
     switch (operator) {
         case '+':
@@ -30,6 +31,8 @@ const operate = (operator, x, y) => {
             return multiply(x, y);
         case '/':
             return divide(x, y);
+        case '^':
+            return power(x, y);
     }
 };
 const clearArray = (arr) => {
@@ -64,7 +67,7 @@ function handleInput(e) {
     }
 
     const isNumber = /^\d/;
-    const isOperator = /^[+\-\*/]/;
+    const isOperator = /^[+\-\*/^]/;
     const isEqual = /^=|Enter/;
     const isClear = /^c/;
     const isDecimalPoint = /^\./;
