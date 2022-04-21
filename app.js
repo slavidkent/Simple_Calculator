@@ -116,7 +116,9 @@ function handleNumber(num) {
     equalActive = false;
 }
 function handleOperator(ope) {
-    if (operator === undefined) {
+    if (numbers.length === 1 && numbers[0] === '.') {
+        numX = 'ERROR';
+    } else if (operator === undefined) {
         // input is not empty or number array is not empty
         if (numbers.length !== 0) {
             numX = parseFloat(numbers.join(''));
@@ -131,15 +133,27 @@ function handleOperator(ope) {
     clearArray(numbers);
     if (numX !== undefined) {
         operator = ope;
-    }
-    if (numX !== undefined) {
         displayTopScreen(numX, ope, numY);
     }
     displayBtmScreen();
     equalActive = false;
 }
 function handleEqual() {
-    if (numX !== undefined && numX !== 'ERROR' && numbers.length !== 0 && operator !== undefined) {
+    // user input '.' only and press equal
+    if (numbers.length === 1 && numbers[0] === '.') {
+        numX = 'ERROR';
+        displayTopScreen();
+        displayBtmScreen(numX);
+    }
+    // if value stored is an Error
+    else if (numX === 'ERROR') {
+        operator = undefined;
+        displayTopScreen();
+        displayBtmScreen(numX);
+        clearArray(numbers);
+    }
+    // if a value is stored operator is pressed and  something is typed
+    else if (numX !== undefined && operator !== undefined && numbers.length !== 0) {
         numY = parseFloat(numbers.join(''));
         displayTopScreen(numX, operator, numY, '=');
         numX = operate(operator, numX, numY);
@@ -148,12 +162,9 @@ function handleEqual() {
         operator = undefined;
         clearArray(numbers);
         equalActive = true;
-    } else if (numX === 'ERROR') {
-        operator = undefined;
-        displayTopScreen();
-        displayBtmScreen(numX);
-        clearArray(numbers);
-    } else if (numbers.length !== 0) {
+    }
+    // if something is typed in and equal is pressed
+    else if (numbers.length !== 0) {
         operator = undefined;
         numX = parseFloat(numbers.join(''));
         clearArray(numbers);
