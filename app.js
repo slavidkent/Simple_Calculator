@@ -3,7 +3,8 @@ let numbers = [];
 let numX; /* accumulator/firstNumber/total of last operation */
 let numY;
 let operator;
-let equalActive = false; //save state of last key pressed is '=' key or not,
+let equalActive = false;
+//save state of last key pressed is '=' key or not,
 // allow "handlePositiveNegative()" to know how to
 // add or remove negative from the number
 //'=' reset most variable, no condition is able to
@@ -13,7 +14,11 @@ const buttons = document.querySelectorAll('.calc-button');
 const displayTop = document.querySelector('.top-screen');
 const displayBtm = document.querySelector('.btm-screen');
 buttons.forEach((button) => button.addEventListener('click', handleInput));
+buttons.forEach((button) => button.addEventListener('mousedown', addActive));
 window.addEventListener('keydown', handleKeyboard);
+window.addEventListener('mouseup', removeActive);
+window.addEventListener('keydown', addActive);
+window.addEventListener('keyup', removeActive);
 
 // function expression
 const add = (x, y) => x + y;
@@ -44,8 +49,8 @@ const lengthControl = (number) => {
     //display max length of 12 digit and round to min 11 integer
     if (floatNumberStringLength > 12 && integerNumberStringLength <= 11 && parseInt(number) !== NaN) {
         return parseFloat(number).toFixed(12 - integerNumberStringLength);
-    } else if (integerNumberStringLength>12){
-        return number.toPrecision(8)
+    } else if (integerNumberStringLength > 12) {
+        return number.toPrecision(8);
     }
     return number;
 };
@@ -70,10 +75,10 @@ function handleInput(e) {
 
     const isNumber = /^\d/;
     const isOperator = /^[+\-\*/^]/;
-    const isEqual = /^=|Enter/;
+    const isEqual = /Enter/;
     const isClear = /^c/;
     const isDecimalPoint = /^\./;
-    const isDelete = /del|Delete|Backspace/;
+    const isDelete = /Delete|Backspace/;
     const isPositiveNegative = /positive-negative/;
 
     switch (true) {
@@ -110,7 +115,6 @@ function handleNumber(num) {
     displayBtmScreen(numbers.join(''));
     equalActive = false;
 }
-
 function handleOperator(ope) {
     if (operator === undefined) {
         // input is not empty or number array is not empty
@@ -134,7 +138,6 @@ function handleOperator(ope) {
     displayBtmScreen();
     equalActive = false;
 }
-
 function handleEqual() {
     if (numX !== undefined && numX !== 'ERROR' && numbers.length !== 0 && operator !== undefined) {
         numY = parseFloat(numbers.join(''));
@@ -158,7 +161,6 @@ function handleEqual() {
         equalActive = true;
     }
 }
-
 function handleClear() {
     clearArray(numbers);
     numX = undefined;
@@ -168,21 +170,18 @@ function handleClear() {
     displayTopScreen();
     equalActive = false;
 }
-
 function handleDelete() {
     if (numbers.length !== 0) {
         numbers.pop();
         displayBtmScreen(numbers.join(''));
     }
 }
-
 function handleDecimal() {
     if (!numbers.includes('.') && numbers.length < 12) {
         numbers.push('.');
         displayBtmScreen(numbers.join(''));
     }
 }
-
 function handlePositiveNegative() {
     if (!equalActive && numbers.length !== 0) {
         if (
@@ -190,7 +189,6 @@ function handlePositiveNegative() {
             (numbers.includes('.') &&
                 numbers.some((number) => ['1', '2', '3', '4', '5', '6', '7', '8', '9'].includes(number)))
         ) {
-            console.log;
             if (numbers[0] === '-') {
                 numbers.shift();
             } else {
@@ -199,13 +197,29 @@ function handlePositiveNegative() {
             displayBtmScreen(numbers.join(''));
         }
     } else if (equalActive) {
-        console.log(typeof numX);
         numX *= -1;
         displayBtmScreen(numX);
     }
 }
 
-// keyboard function
+// keyboard function ================================
 function handleKeyboard(e) {
     handleInput(e);
+}
+
+function addActive(e) {
+    let value;
+    if (e.type === 'mousedown') {
+        value = e.target.value;
+    } else if (e.type === 'keydown') {
+        value = e.key;
+    }
+    buttons.forEach((button) => {
+        if (button.value === value) {
+            button.classList.add('active');
+        }
+    });
+}
+function removeActive() {
+    buttons.forEach((button) => button.classList.remove('active'));
 }
