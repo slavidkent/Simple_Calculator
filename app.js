@@ -3,6 +3,11 @@ let numbers = [];
 let numX; /* accumulator/firstNumber/total of last operation */
 let numY;
 let operator;
+let equalActive = false; //save state of last key pressed is '=' key or not,
+// allow "handlePositiveNegative()" to know how to
+// add or remove negative from the number
+//'=' reset most variable, no condition is able to
+// verify current state of calculator
 
 const buttons = document.querySelectorAll('.calc-button');
 const displayTop = document.querySelector('.top-screen');
@@ -34,11 +39,7 @@ const lengthControl = (number) => {
     let integerNumberStringLength = String(Math.floor(number)).length;
     let floatNumberStringLength = String(number).length;
     //display max length of 12 digit and round to min 11 integer
-    if (
-        floatNumberStringLength > 12 &&
-        integerNumberStringLength <= 11 &&
-        parseInt(number) !== NaN
-    ) {
+    if (floatNumberStringLength > 12 && integerNumberStringLength <= 11 && parseInt(number) !== NaN) {
         return parseFloat(number).toFixed(12 - integerNumberStringLength);
     }
     return number;
@@ -53,7 +54,7 @@ const displayTopScreen = (num1 = '', ope = '', num2 = '', equ = '') => {
     displayTop.textContent = `${num1} ${ope} ${num2} ${equ}`;
 };
 
-// functions to handle input =======================================
+// functions to handle user input ================
 function handleInput(e) {
     let value;
     if (e.type === 'click') {
@@ -68,10 +69,12 @@ function handleInput(e) {
     const isClear = /^c/;
     const isDecimalPoint = /^\./;
     const isDelete = /del|Delete|Backspace/;
+    const isPositiveNegative = /positive-negative/;
 
     switch (true) {
         case isNumber.test(value):
-            ((numbers.length < 12 && !numbers.includes('.'))||(numbers.length < 13 && numbers.includes('.'))) && handleNumber(value);
+            ((numbers.length < 12 && !numbers.includes('.')) || (numbers.length < 13 && numbers.includes('.'))) &&
+                handleNumber(value);
             break;
         case isOperator.test(value):
             handleOperator(value);
@@ -88,14 +91,19 @@ function handleInput(e) {
         case isDelete.test(value):
             handleDelete();
             break;
+        case isPositiveNegative.test(value):
+            handlePositiveNegative();
+            break;
         default:
             break;
     }
 }
 
+// "handleInput()" redirect user input into calculator function=======
 function handleNumber(num) {
     numbers.push(num);
     displayBtmScreen(numbers.join(''));
+    equalActive = false;
 }
 
 function handleOperator(ope) {
@@ -112,20 +120,18 @@ function handleOperator(ope) {
         numY = undefined;
     }
     clearArray(numbers);
-    operator = ope;
+    if (numX !== undefined) {
+        operator = ope;
+    }
     if (numX !== undefined) {
         displayTopScreen(numX, ope, numY);
     }
     displayBtmScreen();
+    equalActive = false;
 }
 
 function handleEqual() {
-    if (
-        numX !== undefined &&
-        numX !== 'ERROR' &&
-        numbers.length !== 0 &&
-        operator !== undefined
-    ) {
+    if (numX !== undefined && numX !== 'ERROR' && numbers.length !== 0 && operator !== undefined) {
         numY = parseFloat(numbers.join(''));
         displayTopScreen(numX, operator, numY, '=');
         numX = operate(operator, numX, numY);
@@ -133,6 +139,7 @@ function handleEqual() {
         numY = undefined;
         operator = undefined;
         clearArray(numbers);
+        equalActive = true;
     } else if (numX === 'ERROR') {
         operator = undefined;
         displayTopScreen();
@@ -143,6 +150,7 @@ function handleEqual() {
         numX = parseFloat(numbers.join(''));
         clearArray(numbers);
         displayTopScreen(numX, '', numY, '=');
+        equalActive = true;
     }
 }
 
@@ -153,13 +161,7 @@ function handleClear() {
     operator = undefined;
     displayBtmScreen();
     displayTopScreen();
-}
-
-function handleDecimal() {
-    if (!numbers.includes('.') && numbers.length<12) {
-        numbers.push('.');
-        displayBtmScreen(numbers.join(''));
-    }
+    equalActive = false;
 }
 
 function handleDelete() {
@@ -168,6 +170,37 @@ function handleDelete() {
         displayBtmScreen(numbers.join(''));
     }
 }
+
+function handleDecimal() {
+    if (!numbers.includes('.') && numbers.length < 12) {
+        numbers.push('.');
+        displayBtmScreen(numbers.join(''));
+    }
+}
+
+function handlePositiveNegative() {
+    if (!equalActive && numbers.length !== 0) {
+        if (
+            (!numbers.includes('.') && numbers[0] !== '0') ||
+            (numbers.includes('.') &&
+                numbers.some((number) => ['1', '2', '3', '4', '5', '6', '7', '8', '9'].includes(number)))
+        ) {
+            console.log;
+            if (numbers[0] === '-') {
+                numbers.shift();
+            } else {
+                numbers.unshift('-');
+            }
+            displayBtmScreen(numbers.join(''));
+        }
+    } else if (equalActive) {
+        console.log(typeof numX);
+        numX *= -1;
+        displayBtmScreen(numX);
+    }
+}
+
+// keyboard function
 function handleKeyboard(e) {
     handleInput(e);
 }
