@@ -78,7 +78,6 @@ body {
     height: 3.5rem;
     font-size: 3rem;
     font-weight: 100;
-
 }
 .calc-button-container {
     width: 100%;
@@ -93,9 +92,9 @@ body {
     color: rgb(122, 122, 122);
     border: 1px solid var(--border-color);
     border-radius: 0;
-    transition:transform 100ms;
+    transition: transform 100ms;
 }
-.calc-button:hover{
+.calc-button:hover {
     transform: translateY(-2px);
 }
 .calc-button:nth-child(17) {
@@ -120,7 +119,7 @@ body {
 .equal:hover {
     background-color: var(--button-equal-hover);
 }
-.equal.active{
+.equal.active {
     background-color: var(--button-equal-active);
 }
 .operator {
@@ -130,7 +129,7 @@ body {
 .operator:hover {
     background-color: var(--button-operator-hover);
 }
-.operator.active{
+.operator.active {
     background-color: var(--button-operator-active);
 }
 .remove {
@@ -139,7 +138,7 @@ body {
 .remove:hover {
     background-color: var(--button-remove-hover);
 }
-.remove.active{
+.remove.active {
     background-color: var(--button-remove-active);
 }
 .positive-negative {
@@ -148,10 +147,9 @@ body {
 .positive-negative:hover {
     background-color: var(--button-special-hover);
 }
-.positive-negative.active{
+.positive-negative.active {
     background-color: var(--button-special-active);
 }
-
 
 footer {
     margin-top: 10px;
@@ -164,4 +162,21 @@ footer a {
 }
 footer i {
     font-size: 1.2rem;
+}
+
+@media (max-width: 500px) {
+    .calc-container {
+        margin: 10px;
+    }
+    .screen {
+        height: 6rem;
+    }
+    .top-screen {
+        font-size: 1rem;
+        height: 1.5rem;
+    }
+    .btm-screen {
+        font-size: 2rem;
+        height: 2.5rem;
+    }
 }
